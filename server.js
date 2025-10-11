@@ -1,11 +1,14 @@
-import express from 'express'
+import express from 'express';
+import { createUsersTable } from './database.js';
 
 const PORT = 8000;
 const app = express();
 
 
 app.get('/', (req, res) => {
-  res.send('I am a server');
+  res.send('Hello, Diary!');
+
+  createUsersTable();
 });
 
 
