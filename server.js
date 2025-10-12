@@ -1,9 +1,15 @@
 import express from 'express';
 import { createUsersTable } from './database.js';
-import authRouter from './src/routes/authRoutes.js';
-import { fileUrlToPath } from 'node:url';
+import { fileURLToPath } from 'node:url';
+import path from 'path';
+import session from 'express-session';
+import SQLiteStore from 'connect-sqlite3';
 
-const __filename = fileUrlToPath(import.meta.url);
+// Routers
+import authRouter from './src/routes/authRoutes.js';
+import entryRouter from './src/routes/entryRoutes.js';
+
+const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const PORT = 8000;
@@ -18,14 +24,37 @@ app.set('view engine', 'ejs');
 // Set the Views Directory
 app.set('views', path.join(__dirname, 'views'));
 
+// Configure express-session with SQLite store
+app.use(
+  session({
+    store: new (SQLiteStore(session))({
+      db: 'sessions.sqlite3', // Store sessions in a separate SQLite database
+      dir: './', // Directory for the session database file
+      concurrentDB: true, // Allow concurrent DB access
+    }),
+    secret: process.env.SESSION_SECRET || 'your-secure-secret',
+    resave: false, // Don't save session if unmodified
+    saveUninitialized: false, // Don't save uninitialised sessions
+    cookie: {
+      secure: process.env.NODE_ENV === 'production', // Use secure cookies in production
+      httpOnly: true, // Prevent client-side access to cookies
+      sameSite: 'strict', // Mitigate CSRF attacks
+      maxAge: 24 * 60 * 60 * 1000, // 1 day in milliseconds
+    },
+  })
+);
+
 // Call database set up once
-createUsersTable();
+await createUsersTable();
 
 app.get('/', (req, res) => {
   res.send('Hello, Diary!');
 });
 
 app.use(authRouter);
+
+app.use('/dashboard', entryRouter);
+
 
 app.listen(PORT, () => console.log(`Server started running on PORT: ${PORT}...`));
 

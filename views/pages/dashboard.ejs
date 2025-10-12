@@ -1,0 +1,10 @@
+<%- include('../partials/header', { pageTitle: 'Dashboard' }) %>
+
+<h1>Welcome to your Diary!</h1>
+<p>User ID: <%= userId %></p>
+
+<form method="POST" action="/logout">
+  <button type="submit">Logout</button>
+</form>
+
+<%- include('../partials/footer') %>

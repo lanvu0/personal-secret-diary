@@ -1,12 +1,13 @@
 import express from 'express';
-import { getRegisterPage, registerUser } from '../controllers/authController';
+import authController from '../controllers/authController.js';
 
 // Create a new router instance
 const router = express.Router();
 
-router.get('/register', getRegisterPage);
-
-router.post('/register', registerUser);
-
+router.get('/register', authController.getRegisterPage);
+router.post('/register', authController.registerUser);
+router.get('/login', authController.getLoginPage);
+router.post('/login', authController.loginUser);
+router.post('/logout', authController.logoutUser);
 
 export default router;
