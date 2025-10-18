@@ -1,13 +1,16 @@
 import express from 'express';
-import { createUsersTable } from './database.js';
+import { createUsersTable } from './database.ts';
 import { fileURLToPath } from 'node:url';
 import path from 'path';
 import session from 'express-session';
 import SQLiteStore from 'connect-sqlite3';
 
+
+
 // Routers
-import authRouter from './src/routes/authRoutes.js';
-import entryRouter from './src/routes/entryRoutes.js';
+import authRouter from './src/routes/authRoutes.ts';
+import entryRouter from './src/routes/entryRoutes.ts';
+import { isLoggedIn } from './src/middleware/authMiddleware.ts';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -28,13 +31,14 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
 // Configure express-session with SQLite store
+const SQLiteStoreConstructor = SQLiteStore(session);
 app.use(
   session({
-    store: new (SQLiteStore(session))({
+    store: new SQLiteStoreConstructor({
       db: 'sessions.sqlite3', // Store sessions in a separate SQLite database
       dir: './', // Directory for the session database file
-      concurrentDB: true, // Allow concurrent DB access
-    }),
+      concurrentDB: 'true', // Allow concurrent DB access
+    }) as any,
     secret: process.env.SESSION_SECRET || 'your-secure-secret',
     resave: false, // Don't save session if unmodified
     saveUninitialized: false, // Don't save uninitialised sessions
@@ -54,7 +58,15 @@ app.use((req, res, next) => {
 });
 
 // Call database set up once
-await createUsersTable();
+async function initialiseApp() {
+  try {
+    await createUsersTable();
+    app.listen(PORT, () => console.log(`Server started running on PORT: ${PORT}...`));
+  } catch (error) {
+    console.error('Failed to initialize app:', error);
+    process.exit(1);
+  }
+}
 
 app.get('/', (req, res) => {
   // Redirect to dashboard if logged in, otherwise to login page
@@ -67,6 +79,6 @@ app.get('/', (req, res) => {
 
 app.use(authRouter);
 
-app.use(entryRouter);
+app.use(isLoggedIn, entryRouter);
 
-app.listen(PORT, () => console.log(`Server started running on PORT: ${PORT}...`));
+initialiseApp();

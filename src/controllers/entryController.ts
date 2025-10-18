@@ -1,14 +1,16 @@
 import { getEntriesByUserId, saveEntryToDatabase, deleteEntryFromDatabase, getEntryByUserId, updateEntryInDatabase } from '../../database.js';
+import { Request, Response } from 'express';
 
-async function getDashboardPage(req, res) {
+
+async function getDashboardPage(req: Request, res: Response): Promise<void> {
   try {
     const userId = req.session.userId;
   
     // Fetch the user's entries
-    const entries = await getEntriesByUserId(userId);
+    const entries = await getEntriesByUserId(userId!);
 
     res.render('pages/dashboard', {
-      userId: req.session.userId, entries: entries,
+      userId: req.session.userId,
       entries: entries
     });
     
@@ -18,7 +20,7 @@ async function getDashboardPage(req, res) {
   }
 }
 
-async function createEntry(req, res) {
+async function createEntry(req: Request, res: Response): Promise<void> {
   try {
     const { title, content } = req.body;
 
@@ -32,7 +34,7 @@ async function createEntry(req, res) {
     console.log(`Content: ${content}`);
 
     // Insert into database
-    await saveEntryToDatabase(title, content, userId, createdAt);
+    await saveEntryToDatabase(title, content, userId!, createdAt);
 
     res.redirect('/dashboard');
   } catch (error) {
@@ -42,13 +44,13 @@ async function createEntry(req, res) {
   }
 }
 
-async function deleteEntry(req, res) {
+async function deleteEntry(req: Request, res: Response): Promise<void> {
   try {
-    const entryId = req.params.entryid;
+    const entryId = parseInt(req.params.entryid as string);
     const userId = req.session.userId;
 
     // Delete post matching entryId & userId
-    await deleteEntryFromDatabase(entryId, userId);
+    await deleteEntryFromDatabase(entryId, userId!);
 
     res.redirect('/dashboard');
   } catch (error) {
@@ -57,13 +59,13 @@ async function deleteEntry(req, res) {
   }
 }
 
-async function getEditEntryPage(req, res) {
+async function getEditEntryPage(req: Request, res: Response): Promise<void> {
   try {
     const userId = req.session.userId;
-    const entryId = req.params.entryid;
+    const entryId = parseInt(req.params.entryid as string);
 
     // Fetch the specific entry & render an edit-entry.ejs, pre-filled with entry's data;
-    const entry = await getEntryByUserId(entryId, userId);
+    const entry = await getEntryByUserId(entryId, userId!);
 
     res.render('pages/edit-entry', { entry });
   } catch (error) {
@@ -72,15 +74,15 @@ async function getEditEntryPage(req, res) {
   }
 }
 
-async function updateEntry(req, res) {
+async function updateEntry(req: Request, res: Response): Promise<void> {
   try {
     const userId = req.session.userId;
     
-    const entryId = req.params.entryid;
+    const entryId = parseInt(req.params.entryid as string);
 
     const { title, content } = req.body;
 
-    await updateEntryInDatabase(entryId, userId, title, content);
+    await updateEntryInDatabase(entryId, userId!, title, content);
 
     res.redirect('/dashboard');
   } catch (error) {

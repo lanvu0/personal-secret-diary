@@ -1,16 +1,24 @@
 import bcrypt from 'bcryptjs';
 import { saveUserToDatabase, checkUserExists, checkUserPassword, getUserId } from '../../database.js';
+import { Request, Response } from 'express';
 
-function getRegisterPage(req, res) {
+function getRegisterPage(req: Request, res: Response) {
   // Renders an EJS view
   res.render('pages/register')
 }
 
-async function registerUser(req, res) {
+async function registerUser(req: Request, res: Response): Promise<void> {
   // Get email, password from req.body
   const { email, password } = req.body;
 
   // Have error checking for email, password
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    return res.render('pages/register', { error: 'Invalid email format' });
+  }
+  if (password.length < 8) {
+    return res.render('pages/register', { error: 'Password must be at least 8 characters' });
+  }
 
   // Hash the password
   const hashedPassword = await bcrypt.hash(password, 10);
@@ -18,6 +26,10 @@ async function registerUser(req, res) {
   // Insert new user into db
   try {
     // Check if user exists
+    const userExists = await checkUserExists(email);
+    if (userExists) {
+      return res.render('pages/register', { error: 'Email already registered' });
+    }
 
     // Save user to database & redirect to login page
     await saveUserToDatabase(email, hashedPassword);
@@ -28,11 +40,11 @@ async function registerUser(req, res) {
   }
 }
 
-function getLoginPage(req, res) {
+function getLoginPage(req: Request, res: Response) {
   res.render('pages/login');
 }
 
-async function loginUser(req, res) {
+async function loginUser(req: Request, res: Response): Promise<void> {
   const { email, password } = req.body;
   if (!email || !password) {
     return res.render('pages/login', { error: 'Email and password are required' });
@@ -60,12 +72,18 @@ async function loginUser(req, res) {
   }
 }
 
-async function logoutUser(req, res) {
+async function logoutUser(req: Request, res: Response): Promise<void> {
   // Destroy the session
-  req.session.destroy();
-
-  // Redirect to login
-  res.redirect('/login');
+  req.session.destroy(err => {
+    if (err) {
+      console.error('Error destroying session:', err);
+      return res.status(500).send('Logout failed');
+    } 
+    console.error('Session destroyed.');
+    
+    // Redirect to login
+    res.redirect('/login');
+  });
 }
 
 export default {

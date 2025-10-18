@@ -1,0 +1,36 @@
+{
+  "compilerOptions": {
+    /* --- Core Module Settings --- */
+    "target": "ES2022",                // Compile to modern JavaScript
+    "module": "NodeNext",               // Use the modern Node.js module system
+    "moduleResolution": "NodeNext",     // How modules are found, must match "module"
+
+    /* --- Migration-Specific Settings --- */
+    "allowJs": true,                    // IMPORTANT: Allow .js files to co-exist with .ts
+    "checkJs": false,                   // IMPORTANT: Do NOT type-check the .js files
+    "noEmit": true,
+    "allowImportingTsExtensions": true,
+
+    /* --- Project Structure --- */
+    "rootDir": "./",                    // The root of your source files (TS and JS)
+    "outDir": "./dist",                 // Where compiled JavaScript output will go
+
+    /* --- Strictness & Best Practices --- */
+    "strict": true,                     // Enable all strict type-checking options
+    "esModuleInterop": true,            // Allows cleaner imports from CommonJS modules
+    "forceConsistentCasingInFileNames": true, // Prevents case-related bugs
+    "skipLibCheck": true,               // Skip type checking of declaration files from dependencies
+
+    /* --- For Debugging --- */
+    "sourceMap": true                   // Generate source maps for easier debugging
+  },
+  "include": [
+    "server.ts", 
+    "database.ts", 
+    "src/**/*.ts"
+  ], // Explicitly tell TS which files to compile
+  "exclude": [
+    "node_modules", 
+    "dist"
+  ] // Folders to ignore
+}
