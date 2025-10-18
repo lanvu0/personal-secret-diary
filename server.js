@@ -12,7 +12,7 @@ import entryRouter from './src/routes/entryRoutes.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const PORT = 8000;
+const PORT = process.env.PORT || 8000;
 const app = express();
 
 // Serve static files (CSS, JS) from the 'public' directory
