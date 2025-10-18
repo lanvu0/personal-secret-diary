@@ -1,10 +1,26 @@
 <%- include('../partials/header', { pageTitle: 'Dashboard' }) %>
 
-<h1>Welcome to your Diary!</h1>
-<p>User ID: <%= userId %></p>
-
 <form method="POST" action="/logout">
   <button type="submit">Logout</button>
 </form>
+
+<h1>Welcome to your Diary!</h1>
+<p>User ID: <%= userId %></p>
+
+<h2>Add a New Entry</h2>
+<form method="POST" action="/entries">
+  <label for="title">Title</label>
+  <div>
+    <input type="text" id="title" name="title" required>
+  </div>
+  <label for="content">Content</label>
+  <div>
+    <textarea id="content" name="content" rows="5" required></textarea>
+  </div>
+  <button type="submit">Save Entry</button>
+</form>
+
+
+<h2>Your Existing Entries</h2>
 
 <%- include('../partials/footer') %>

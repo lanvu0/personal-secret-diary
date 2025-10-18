@@ -4,7 +4,9 @@ import { isLoggedIn } from '../middleware/authMiddleware.js';
 
 const router = express.Router()
 
-router.get('/', isLoggedIn, entryController.getDashboardPage);
+router.get('/dashboard', isLoggedIn, entryController.getDashboardPage);
+
+router.post('/entries', isLoggedIn, entryController.createEntry);
 
 
 export default router;

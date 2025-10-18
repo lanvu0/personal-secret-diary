@@ -53,7 +53,7 @@ app.get('/', (req, res) => {
 
 app.use(authRouter);
 
-app.use('/dashboard', entryRouter);
+app.use(entryRouter);
 
 
 app.listen(PORT, () => console.log(`Server started running on PORT: ${PORT}...`));
