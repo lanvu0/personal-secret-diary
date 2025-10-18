@@ -3,15 +3,31 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title><%= typeof pageTitle !== 'undefined' ? pageTitle : 'My Diary' %></title>
+  <title><%= typeof pageTitle !== 'undefined' ? pageTitle : 'My Diary' %> | Secret Diary</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-  <header>
-    <nav>
-      <a href="/">Home</a>
-      <a href="/login">Login</a>
-      <a href="/register">Register</a>
-    </nav>
+  <header class="main-header">
+    <div class="container">
+      <a href="/" class="logo">Secret Diary</a>
+      <nav>
+        <ul>
+          <% if (isAuthenticated) { %>
+            <li><a href="/dashboard">Dashboard</a></li>
+            <li>
+              <form method="POST" action="/logout">
+                <button type="submit" class="nav-logout">Logout</button>
+              </form>
+            </li>
+          <% } else { %>
+            <li><a href="/login">Login</a></li>
+            <li><a href="/register">Register</a></li>
+          <% } %>
+        </ul>
+      </nav>
+    </div>
   </header>
-  <main>
+  <main class="container">

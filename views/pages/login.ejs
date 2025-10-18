@@ -1,11 +1,19 @@
-<%- include('../partials/header', { pageTitle: 'Register' }) %>
+<%- include('../partials/header', { pageTitle: 'Login' }) %>
 
-<form method="post" action="/login">
-  <label for="email">Email</label>
-  <input id="email" type="email" name="email" required>
-  <label for="password">Password</label>
-  <input id="password" type="password" name="password" required>
-  <button type="submit">Log In</button>
-</form>
+<div class="auth-container">
+  <form method="post" action="/login" class="auth-form">
+    <h2>Login</h2>
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input id="email" type="email" name="email" required>
+    </div>
+    <div class="form-group">
+      <label for="password">Password</label>
+      <input id="password" type="password" name="password" required>
+    </div>
+    <button type="submit">Log In</button>
+    <p class="auth-switch">Don't have an account? <a href="/register">Register here</a></p>
+  </form>
+</div>
 
 <%- include('../partials/footer') %>

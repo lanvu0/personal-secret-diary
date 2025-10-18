@@ -15,6 +15,9 @@ const __dirname = path.dirname(__filename);
 const PORT = 8000;
 const app = express();
 
+// Serve static files (CSS, JS) from the 'public' directory
+app.use(express.static(path.join(__dirname, 'public')));
+
 // Middleware to parse form data
 app.use(express.urlencoded({ extended: false }));
 
@@ -44,17 +47,26 @@ app.use(
   })
 );
 
+// Middleware to make user session data available to all templates
+app.use((req, res, next) => {
+  res.locals.isAuthenticated = !!req.session.userId;
+  next();
+});
+
 // Call database set up once
 await createUsersTable();
 
 app.get('/', (req, res) => {
-  res.send('Hello, Diary!');
+  // Redirect to dashboard if logged in, otherwise to login page
+  if (req.session.userId) {
+    res.redirect('/dashboard');
+  } else {
+    res.redirect('/login');
+  }
 });
 
 app.use(authRouter);
 
 app.use(entryRouter);
 
-
 app.listen(PORT, () => console.log(`Server started running on PORT: ${PORT}...`));
-
