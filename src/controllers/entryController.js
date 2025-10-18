@@ -1,13 +1,21 @@
-import { getAllEntries, saveEntryToDatabase } from '../../database.js';
+import { getEntriesByUserId, saveEntryToDatabase, deleteEntryFromDatabase, getEntryByUserId, updateEntryInDatabase } from '../../database.js';
 
 async function getDashboardPage(req, res) {
-  const userId = req.session.userId;
+  try {
+    const userId = req.session.userId;
+  
+    // Fetch the user's entries
+    const entries = await getEntriesByUserId(userId);
 
-  // Get all entries
-  const entryList = await getAllEntries(userId);
-  console.log(entryList)
-
-  res.render('pages/dashboard', { userId: req.session.userId, entries: entryList } );
+    res.render('pages/dashboard', {
+      userId: req.session.userId, entries: entries,
+      entries: entries
+    });
+    
+  } catch (error) {
+    console.error("Failed to load dashboard:", error);
+    res.status(500).send("Sorry, something went wrong.");
+  }
 }
 
 async function createEntry(req, res) {
@@ -34,7 +42,57 @@ async function createEntry(req, res) {
   }
 }
 
+async function deleteEntry(req, res) {
+  try {
+    const entryId = req.params.entryid;
+    const userId = req.session.userId;
+
+    // Delete post matching entryId & userId
+    await deleteEntryFromDatabase(entryId, userId);
+
+    res.redirect('/dashboard');
+  } catch (error) {
+    console.error("Failed to delete entry:", error);
+    res.status(500).send("Sorry, something went wrong."); 
+  }
+}
+
+async function getEditEntryPage(req, res) {
+  try {
+    const userId = req.session.userId;
+    const entryId = req.params.entryid;
+
+    // Fetch the specific entry & render an edit-entry.ejs, pre-filled with entry's data;
+    const entry = await getEntryByUserId(entryId, userId);
+
+    res.render('pages/edit-entry', { entry });
+  } catch (error) {
+    console.error("Failed to get edit entry page:", error);
+    res.status(500).send("Sorry, something went wrong."); 
+  }
+}
+
+async function updateEntry(req, res) {
+  try {
+    const userId = req.session.userId;
+    
+    const entryId = req.params.entryid;
+
+    const { title, content } = req.body;
+
+    await updateEntryInDatabase(entryId, userId, title, content);
+
+    res.redirect('/dashboard');
+  } catch (error) {
+    console.error("Failed to update entry:", error);
+    res.status(500).send("Sorry, something went wrong."); 
+  }
+}
+
 export default {
   getDashboardPage,
-  createEntry
+  createEntry,
+  deleteEntry,
+  getEditEntryPage,
+  updateEntry
 }

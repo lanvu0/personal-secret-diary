@@ -8,5 +8,11 @@ router.get('/dashboard', isLoggedIn, entryController.getDashboardPage);
 
 router.post('/entries', isLoggedIn, entryController.createEntry);
 
+router.post('/entries/delete/:entryid', isLoggedIn, entryController.deleteEntry);
+
+router.get('/entries/edit/:entryid', isLoggedIn, entryController.getEditEntryPage);
+
+router.post('/entries/update/:entryid', isLoggedIn, entryController.updateEntry)
+
 
 export default router;

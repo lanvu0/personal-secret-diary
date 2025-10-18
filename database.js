@@ -96,14 +96,47 @@ export async function saveEntryToDatabase(title, content, userId, createdAt) {
   }
 }
 
-export async function getAllEntries(userId) {
+export async function getEntriesByUserId(userId) {
   try {
     const db = await getDb();
-    const data = await db.all('SELECT title, content, created_at FROM entries WHERE user_id = ?', userId);
+    const entries = await db.all('SELECT id, title, content, created_at FROM entries WHERE user_id = ? ORDER BY created_at DESC', [userId]);
 
-    return data;
+    return entries;
   } catch (error) {
-    console.error('Error getting all posts from database', error);
+    console.error('Error fetching entries', error);
+    throw error;
+  }
+}
+
+export async function deleteEntryFromDatabase(entryId, userId) {
+  try {
+    const db = await getDb();
+    await db.run('DELETE FROM entries WHERE id = ? AND user_id = ?', [entryId, userId]);
+  } catch (error) {
+    console.error('Error deleting entry', error);
+    throw error;
+  }
+}
+
+export async function getEntryByUserId(entryId, userId) {
+  try {
+    const db = await getDb();
+    const entry = await db.get('SELECT id, title, content, created_at FROM entries WHERE id = ? AND user_id = ?', [entryId, userId]);
+
+    return entry;
+  } catch (error) {
+    console.error('Error fetching entry', error);
+    throw error;
+  }
+}
+
+export async function updateEntryInDatabase(entryId, userId, title, content) {
+  try {
+    const db = await getDb();
+
+    await db.run('UPDATE entries SET title = ?, content = ? WHERE id = ? AND user_id = ?', [title, content, entryId, userId]);
+  } catch (error) {
+    console.error('Error fetching entry', error);
     throw error;
   }
 }

@@ -23,4 +23,30 @@
 
 <h2>Your Existing Entries</h2>
 
+<div class="entries-list">
+  <% if (entries && entries.length > 0) { %>
+    <% entries.forEach(entry => { %>
+      <article class="entry">
+        <h3><%= entry.title %></h3>
+        <p class="entry-meta">
+          Posted on: <%= new Date(entry.created_at).toLocaleDateString() %>
+        </p>
+        <p><%= entry.content %></p>
+        
+        <div class="entry-actions">
+          <!-- The Edit button will link to a future route -->
+          <a href="/entries/edit/<%= entry.id %>" class="btn-edit">Edit</a>
+          
+          <!-- The Delete button will be a small form -->
+          <form action="/entries/delete/<%= entry.id %>" method="POST" style="display: inline;">
+            <button type="submit" class="btn-delete">Delete</button>
+          </form>
+        </div>
+      </article>
+    <% }); %>
+  <% } else { %>
+    <p>You haven't written any entries yet. Why not add one now?</p>
+  <% } %>
+</div>
+
 <%- include('../partials/footer') %>
