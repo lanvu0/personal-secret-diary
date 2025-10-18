@@ -2,6 +2,10 @@
 
 A full-stack, private journaling application built with Node.js, Express, and SQLite. This project was developed to practice and demonstrate core backend development concepts, including user authentication, session management, RESTful routing, and database interactions in a server-side rendered application.
 
+**Live Demo:** [https://personal-secret-diary.onrender.com/](https://personal-secret-diary.onrender.com/)
+
+---
+
 ![Screenshot of the application dashboard](./dashboard-screenshot.png)
 
 ## Project Focus & Learning Objectives
@@ -9,10 +13,10 @@ A full-stack, private journaling application built with Node.js, Express, and SQ
 The primary objective of this project was to build a robust and secure backend system from the ground up. The focus was on implementing the following key concepts:
 
 *   **RESTful API Design:** Structuring routes and controllers for logical and scalable CRUD (Create, Read, Update, Delete) operations on diary entries.
-*   **User Authentication & Authorization:** Implementing secure user registration, login, and password hashing using `bcryptjs`.
+*   **User Authentication & Authorisation:** Implementing secure user registration, login, and password hashing using `bcryptjs`.
 *   **Session Management:** Using `express-session` with a `connect-sqlite3` store to maintain persistent user sessions and protect routes.
 *   **Database Interaction:** Performing SQL operations with an SQLite database, including table creation, querying, and data manipulation, using the `sqlite` and `sqlite3` packages.
-*   **MVC (Model-View-Controller) Pattern:** Organizing the codebase into distinct logical parts (routes, controllers, database logic) for maintainability and separation of concerns.
+*   **MVC (Model-View-Controller) Pattern:** Organising the codebase into distinct logical parts (routes, controllers, database logic) for maintainability and separation of concerns.
 *   **Middleware:** Creating custom middleware to protect routes and ensure that only authenticated users can access their personal data.
 
 To support these backend features, a clean user interface was implemented using EJS for server-side rendering, allowing the backend to be tested and demonstrated effectively.
@@ -62,7 +66,7 @@ To run this project locally, follow these steps:
 
 ## Directory Structure
 
-The project follows a standard MVC-like structure to keep the codebase organized and maintainable.
+The project follows a standard MVC-like structure to keep the codebase organised and maintainable.
 
 ```
 /
