@@ -12,6 +12,13 @@ async function registerUser(req: Request, res: Response): Promise<void> {
   const { email, password } = req.body;
 
   // Have error checking for email, password
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    return res.render('pages/register', { error: 'Invalid email format' });
+  }
+  if (password.length < 8) {
+    return res.render('pages/register', { error: 'Password must be at least 8 characters' });
+  }
 
   // Hash the password
   const hashedPassword = await bcrypt.hash(password, 10);
@@ -19,6 +26,10 @@ async function registerUser(req: Request, res: Response): Promise<void> {
   // Insert new user into db
   try {
     // Check if user exists
+    const userExists = await checkUserExists(email);
+    if (userExists) {
+      return res.render('pages/register', { error: 'Email already registered' });
+    }
 
     // Save user to database & redirect to login page
     await saveUserToDatabase(email, hashedPassword);
@@ -66,13 +77,13 @@ async function logoutUser(req: Request, res: Response): Promise<void> {
   req.session.destroy(err => {
     if (err) {
       console.error('Error destroying session:', err);
-    } else {
-      console.error('Session destroyed.');
-    }
+      return res.status(500).send('Logout failed');
+    } 
+    console.error('Session destroyed.');
+    
+    // Redirect to login
+    res.redirect('/login');
   });
-
-  // Redirect to login
-  res.redirect('/login');
 }
 
 export default {
