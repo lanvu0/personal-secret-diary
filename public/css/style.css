@@ -226,6 +226,10 @@ button:hover, .btn-edit:hover {
   word-wrap: break-word;
 }
 
+.entry-content {
+  white-space: pre-wrap;
+}
+
 .entry-meta {
   font-size: 0.9rem;
   color: #7f8c8d;

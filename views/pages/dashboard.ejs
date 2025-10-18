@@ -28,7 +28,7 @@
         <p class="entry-meta">
           Posted on: <%= new Date(entry.created_at).toLocaleDateString() %>
         </p>
-        <p><%= entry.content.split('\n').join('<br>') %></p>
+        <p class="entry-content"><%= entry.content %></p>
         
         <div class="entry-actions">
           <a href="/entries/edit/<%= entry.id %>" class="btn-edit">Edit</a>
