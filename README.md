@@ -2,10 +2,6 @@
 
 A full-stack, private journaling application built with Node.js, Express, and SQLite. This project was developed to practice and demonstrate core backend development concepts, including user authentication, session management, RESTful routing, and database interactions in a server-side rendered application.
 
-**Live Demo:** [https://personal-secret-diary.onrender.com/](https://personal-secret-diary.onrender.com/)
-
----
-
 ![Screenshot of the application dashboard](./dashboard-screenshot.png)
 
 ## Project Focus & Learning Objectives
